@@ -18,3 +18,7 @@ Channel owners, also administrators, had the authority to appoint other administ
 Administrators could manage user interactions within the channel.
 Playing Pong and connecting took a new turn with the ability to invite others through the chat interface.
 Exploring other players' profiles became a seamless part of the chat experience.
+![Screenshot from 2023-12-11 17-58-35](https://github.com/Oussama-Aissouni/ft_transcendence/assets/72950008/d77af136-ebc2-4962-a99e-402f82deca4f)
+![Screenshot from 2023-12-11 17-59-02](https://github.com/Oussama-Aissouni/ft_transcendence/assets/72950008/40e1fb71-8850-4102-8a1a-6bcc4b9c4b26)
+![Screenshot from 2023-12-11 17-59-14](https://github.com/Oussama-Aissouni/ft_transcendence/assets/72950008/465613e9-74b4-46a3-bad9-f39ac7a5b7b2)
+![Screenshot from 2023-12-11 17-59-53](https://github.com/Oussama-Aissouni/ft_transcendence/assets/72950008/c07af52b-5628-49a6-8f51-1967905e9579)
