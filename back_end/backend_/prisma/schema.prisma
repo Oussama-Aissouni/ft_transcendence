@@ -1,0 +1,143 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  // createdAt DateTime @default(now())
+  // updatedAt DateTime @updatedAt
+  userId  String @unique
+  email String @unique
+  username String @unique
+  displayName String
+  image String
+  dms DM[] @relation("participants")
+  messages Message[]
+  participantNotifs Notification[] @relation("participantNotif")
+  friends Json[]
+  blockedUsers String[]
+  rooms RoomMember[]
+  roomInvites Json[]
+
+  FirstTime Boolean @default(true)
+
+
+  Status String @default("online")
+  otp_secret  String?
+  otp_authurl String?
+  otp_enabled   Boolean @default(false)
+  otp_validated Boolean @default(false)
+  matchHistory      Json[]
+  wins  Int @default(0)
+  losses  Int @default(0)
+
+  achievements String[]
+}
+
+model Message {
+  id       Int  @id @default(autoincrement())
+  sentAt DateTime @default(now())
+  messageContent String
+  dmId  Int?
+  senderId  String
+  roomId  Int?
+  dm  DM? @relation(fields: [dmId], references: [id])
+  sender  User @relation(fields: [senderId], references: [userId])
+  room  Room? @relation(fields: [roomId], references: [id])
+
+}
+
+model DM {
+  id Int @id @default(autoincrement())
+  // participantId Int
+  // msgId Int
+  creatorId String
+  participants User[]   @relation("participants")
+  // participant RoomMember @relation("participant", fields: [participantId], references: [id])
+  // participants RoomMember[]
+  msg Message[]
+  lastUpdate DateTime @updatedAt
+}
+
+model BannedUser {
+  id Int @id @default(autoincrement())
+  userId Int
+  // user User @relation(fields: [userId], references: [id])
+}
+
+model FriendList {
+  id  Int @id @default(autoincrement())
+  // friends User[]
+}
+
+model friendRequest {
+  id Int @id @default(autoincrement())
+  senderId  Int
+  // sender  User @relation(fields: [senderId], references: [id])
+}
+
+model MatchHistory {
+  id Int @id @default(autoincrement())
+  userId  Int
+  // user User @relation("userHistory" ,fields: [userId], references: [id])notif read boolean
+
+  opponentId  Int
+  // opponent User @relation("opponentHistory" ,fields: [opponentId], references: [id])
+  GameResult  String
+  
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  senderId String
+  receiverId String
+  type String
+  read Boolean @default(false)
+  interactedWith  Boolean @default(false)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  roomId Int?
+  matchId Int?
+  participant User @relation("participantNotif", fields: [receiverId], references: [userId])
+}
+
+model Room {
+  id Int @id @default(autoincrement())
+  msgs Message[]
+  image String
+  RoomName String
+  visibility String
+  password String?
+  RoomMembers RoomMember[]
+  bannedUsers String[]
+  lastUpdate DateTime @updatedAt
+}
+
+model RoomMember {
+  id  Int @id  @default(autoincrement())
+  RoomId  Int
+  memberId String
+  role Role @default(USER)
+  muted Boolean @default(false)
+  muteExpiration DateTime?
+  room  Room  @relation(fields: [RoomId], references: [id])
+  member User  @relation(fields: [memberId],references: [userId])
+  joinTime DateTime
+  inviterId String?
+  // leftTime DateTime
+}
+
+enum Role {
+  USER
+  ADMIN
+  OWNER
+}

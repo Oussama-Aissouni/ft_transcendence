@@ -1,0 +1,48 @@
+version: '3'
+services:
+  react-app:
+    build:
+      context: front_end/transcendence-master
+      dockerfile: Dockerfile
+    image: react-app
+    container_name: react-app
+    ports:
+      - "5173:80"
+    depends_on:
+      - nestjs-app
+    restart: always
+    networks:
+      - aaa
+
+  nestjs-app:
+    build:
+      context: back_end/backend_
+      dockerfile: Dockerfile
+    ports:
+      - "3003:3003"
+      - "5555:5555"
+    depends_on:
+      - db
+    environment:
+      - NODE_ENV=production
+    env_file:
+      - back_end/backend_/.env
+    image: nestjs-app
+    container_name: nestjs-app
+    restart: always
+    networks:
+      - aaa
+  db:
+    image: postgres:13
+    ports:
+      - "5432:5432"
+    env_file:
+      - back_end/backend_/.env
+    restart: always
+    container_name: db
+    networks:
+      - aaa
+
+networks:
+  aaa:
+    driver: bridge

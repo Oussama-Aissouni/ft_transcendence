@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  userId  String @unique
+  email String @unique
+  username String
+  displayName String
+  image String
+  dmAdmin DM[]  @relation("dmAdmin")
+  historyAdmin MatchHistory[] @relation("userHistory")
+  historyOpponent MatchHistory[] @relation("opponentHistory")
+  // participant DM[]  @relation("participant")
+  Admin Notification[] @relation("Admin")
+  participantNotif Notification[] @relation("participantNotif")
+  roomAdmin RoomMember[] @relation("roomAdmin")
+}
+
+model MatchHistory {
+  id Int @id @default(autoincrement())
+  userId  Int
+  user User @relation("userHistory" ,fields: [userId], references: [id])
+  opponentId  Int
+  opponent User @relation("opponentHistory" ,fields: [opponentId], references: [id])
+  GameResult  String
+  
+
+}
+
+model Message {
+  id       Int  @id @default(autoincrement())
+  sentAt DateTime
+  messageContent String
+  dmId  Int
+  dm  DM  @relation(fields: [dmId], references: [id])
+
+}
+
+model DM  {
+  id Int @id @default(autoincrement())
+  adminId Int
+  participantId Int
+  msgId Int
+  admin User  @relation("dmAdmin", fields: [adminId],references: [id])
+  // participant RoomMember @relation("participant", fields: [participantId], references: [id])
+  participants RoomMember[]
+  msg Message[]
+}
+
+model Notification {
+  id Int @id @default(autoincrement())
+  adminId Int
+  participantId Int?
+  msgId Int
+  admin User  @relation("Admin", fields: [adminId],references: [id])
+  participant User? @relation("participantNotif", fields: [participantId], references: [id])
+}
+
+model Room  {
+  id Int @id @default(autoincrement())
+  RoomName String
+  RoomMembers RoomMember[]
+}
+
+model RoomMember  {
+  id  Int @id  @default(autoincrement())
+  RoomId  Int
+  adminId Int
+  dmId Int
+  room  Room  @relation(fields: [RoomId], references: [id])
+  admin User  @relation("roomAdmin", fields: [adminId],references: [id])
+  dmRoom DM @relation(fields: [dmId], references: [id])
+  joinTime DateTime
+  leftTime DateTime
+}
